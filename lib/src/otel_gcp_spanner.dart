@@ -1,15 +1,16 @@
-// Licensed under the Dartastic Pro Software License Agreement.
+// Licensed under the Apache License, Version 2.0
 // Copyright 2025-2026 Mindful Software LLC d/b/a Dartastic.io, All rights reserved.
 
-import 'package:dartastic_opentelemetry/dartastic_opentelemetry.dart';
+import 'package:dartastic_opentelemetry_api/dartastic_opentelemetry_api.dart';
 
 import 'otel_gcp_spanner_suppression.dart';
 
 const _tracerName = 'dartastic_otel_libs_gcp_spanner';
 
-Tracer _tracer() => OTel.tracerProvider().getTracer(_tracerName);
+APITracer _tracer() => OTelAPI.tracerProvider().getTracer(_tracerName);
 
 class GcpSpannerResult {
+  /// Creates a result.
   const GcpSpannerResult({
     this.project,
     this.instance,
@@ -97,8 +98,13 @@ class GcpSpannerResult {
   final int? statusCode;
 }
 
+/// What a traced call returned: the value for the caller plus fields
+/// recorded on the span.
 class GcpSpannerCallResult<T> {
+  /// Creates a call result.
   const GcpSpannerCallResult({required this.value, this.result});
+
+  /// The value returned to the caller.
   final T value;
   final GcpSpannerResult? result;
 }
@@ -130,7 +136,7 @@ Future<T> tracedGcpSpanner<T>({
   final span = _tracer().startSpan(
     'gcp_spanner $operation',
     kind: SpanKind.client,
-    attributes: OTel.attributesFromMap(m),
+    attributes: OTelAPI.attributesFromMap(m),
   );
   try {
     final r = await invoke();
@@ -138,140 +144,141 @@ Future<T> tracedGcpSpanner<T>({
       final res = r.result!;
       final extras = <Attribute<Object>>[];
       if (res.project != null) {
-        extras.add(OTel.attributeString('gcp_spanner.project', res.project!));
+        extras
+            .add(OTelAPI.attributeString('gcp_spanner.project', res.project!));
       }
       if (res.instance != null) {
-        extras.add(OTel.attributeString(
+        extras.add(OTelAPI.attributeString(
           'gcp_spanner.instance',
           res.instance!,
         ));
       }
       if (res.instanceConfig != null) {
-        extras.add(OTel.attributeString(
+        extras.add(OTelAPI.attributeString(
           'gcp_spanner.instance_config',
           res.instanceConfig!,
         ));
       }
       if (res.database != null) {
-        extras.add(OTel.attributeString(
+        extras.add(OTelAPI.attributeString(
           'gcp_spanner.database',
           res.database!,
         ));
       }
       if (res.dialect != null) {
-        extras.add(OTel.attributeString(
+        extras.add(OTelAPI.attributeString(
           'gcp_spanner.dialect',
           res.dialect!,
         ));
       }
       if (res.processingUnits != null) {
-        extras.add(OTel.attributeInt(
+        extras.add(OTelAPI.attributeInt(
           'gcp_spanner.processing_units',
           res.processingUnits!,
         ));
       }
       if (res.nodeCount != null) {
-        extras.add(OTel.attributeInt(
+        extras.add(OTelAPI.attributeInt(
           'gcp_spanner.node_count',
           res.nodeCount!,
         ));
       }
       if (res.session != null) {
-        extras.add(OTel.attributeString(
+        extras.add(OTelAPI.attributeString(
           'gcp_spanner.session',
           res.session!,
         ));
       }
       if (res.transactionKind != null) {
-        extras.add(OTel.attributeString(
+        extras.add(OTelAPI.attributeString(
           'gcp_spanner.transaction.kind',
           res.transactionKind!,
         ));
       }
       if (res.statementKind != null) {
-        extras.add(OTel.attributeString(
+        extras.add(OTelAPI.attributeString(
           'gcp_spanner.statement.kind',
           res.statementKind!,
         ));
       }
       if (res.sql != null) {
-        extras.add(OTel.attributeInt('gcp_spanner.sql.length', res.sql!));
+        extras.add(OTelAPI.attributeInt('gcp_spanner.sql.length', res.sql!));
       }
       if (res.rowCount != null) {
-        extras.add(OTel.attributeInt(
+        extras.add(OTelAPI.attributeInt(
           'gcp_spanner.row_count',
           res.rowCount!,
         ));
       }
       if (res.modifiedRows != null) {
-        extras.add(OTel.attributeInt(
+        extras.add(OTelAPI.attributeInt(
           'gcp_spanner.modified_rows',
           res.modifiedRows!,
         ));
       }
       if (res.bytesReturned != null) {
-        extras.add(OTel.attributeInt(
+        extras.add(OTelAPI.attributeInt(
           'gcp_spanner.bytes_returned',
           res.bytesReturned!,
         ));
       }
       if (res.cpuMillis != null) {
-        extras.add(OTel.attributeInt(
+        extras.add(OTelAPI.attributeInt(
           'gcp_spanner.cpu_ms',
           res.cpuMillis!,
         ));
       }
       if (res.requestPriority != null) {
-        extras.add(OTel.attributeString(
+        extras.add(OTelAPI.attributeString(
           'gcp_spanner.request_priority',
           res.requestPriority!,
         ));
       }
       if (res.queryOptimizer != null) {
-        extras.add(OTel.attributeString(
+        extras.add(OTelAPI.attributeString(
           'gcp_spanner.query_optimizer',
           res.queryOptimizer!,
         ));
       }
       if (res.routedFromRegion != null) {
-        extras.add(OTel.attributeString(
+        extras.add(OTelAPI.attributeString(
           'gcp_spanner.routed_from_region',
           res.routedFromRegion!,
         ));
       }
       if (res.commitTimestampUnixMicros != null) {
-        extras.add(OTel.attributeInt(
+        extras.add(OTelAPI.attributeInt(
           'gcp_spanner.commit_timestamp_unix_micros',
           res.commitTimestampUnixMicros!,
         ));
       }
       if (res.partitionedDml != null) {
-        extras.add(OTel.attributeBool(
+        extras.add(OTelAPI.attributeBool(
           'gcp_spanner.partitioned_dml',
           res.partitionedDml!,
         ));
       }
       if (res.abortRetryCount != null) {
-        extras.add(OTel.attributeInt(
+        extras.add(OTelAPI.attributeInt(
           'gcp_spanner.abort_retries',
           res.abortRetryCount!,
         ));
       }
       if (res.errorCode != null) {
-        extras.add(OTel.attributeString(
+        extras.add(OTelAPI.attributeString(
           'gcp_spanner.error.code',
           res.errorCode!,
         ));
         span.setStatus(SpanStatusCode.Error, 'Spanner ${res.errorCode}');
       }
       if (res.errorMessage != null) {
-        extras.add(OTel.attributeString(
+        extras.add(OTelAPI.attributeString(
           'gcp_spanner.error.message',
           res.errorMessage!,
         ));
       }
       if (res.statusCode != null) {
-        extras.add(OTel.attributeInt(
+        extras.add(OTelAPI.attributeInt(
           'http.response.status_code',
           res.statusCode!,
         ));
@@ -282,13 +289,13 @@ Future<T> tracedGcpSpanner<T>({
           );
         }
       }
-      if (extras.isNotEmpty) span.addAttributes(OTel.attributes(extras));
+      if (extras.isNotEmpty) span.addAttributes(OTelAPI.attributes(extras));
     }
     return r.value;
   } catch (e, st) {
-    span.addAttributes(OTel.attributes([
-      OTel.attributeString(
-        ErrorResource.errorType.key,
+    span.addAttributes(OTelAPI.attributes([
+      OTelAPI.attributeString(
+        ErrorAttributes.errorType.key,
         e.runtimeType.toString(),
       ),
     ]));
